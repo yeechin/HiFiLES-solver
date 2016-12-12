@@ -26,7 +26,7 @@
 #pragma once
 
 #include <string>
-#include "array.h"
+#include "arrayt.h"
 
 class cubature_hexa
 {
@@ -75,10 +75,10 @@ public:
   int n_pts;
 
   // location of cubature points
-  array<double> locs;
+  arrayt<double> locs;
 
   // weight of cubature points
-  array<double> weights;
+  arrayt<double> weights;
   
   // cubature data file
   ifstream datfile;

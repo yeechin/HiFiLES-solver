@@ -26,7 +26,7 @@
 #pragma once
 
 #include <string>
-#include "array.h"
+#include "arrayt.h"
 
 class cubature_tri
 {
@@ -72,10 +72,10 @@ public:
   int n_pts;
 
   // location of cubature_tri points
-  array<double> locs;
+  arrayt<double> locs;
 
   // weight of cubature_tri points
-  array<double> weights;
+  arrayt<double> weights;
   
   // cubature data file
   ifstream datfile;

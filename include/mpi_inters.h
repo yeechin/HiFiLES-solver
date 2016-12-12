@@ -26,7 +26,7 @@
 #pragma once
 
 #include "inters.h"
-#include "array.h"
+#include "arrayt.h"
 #include "solution.h"
 
 #ifdef _MPI
@@ -84,21 +84,21 @@ protected:
 
   // #### members ####
 
-  array<double*> disu_fpts_r;
-  array<double*> grad_disu_fpts_r;
+  arrayt<double*> disu_fpts_r;
+  arrayt<double*> grad_disu_fpts_r;
 
   int nproc;
   int rank;
   int Nmess;
 
-  array<double> out_buffer_disu, in_buffer_disu;
-  array<int> Nout_proc;
+  arrayt<double> out_buffer_disu, in_buffer_disu;
+  arrayt<int> Nout_proc;
 
   // Viscous
-  array<double> out_buffer_grad_disu, in_buffer_grad_disu;
+  arrayt<double> out_buffer_grad_disu, in_buffer_grad_disu;
 
   // LES
-  array<double> out_buffer_sgsf, in_buffer_sgsf;
+  arrayt<double> out_buffer_sgsf, in_buffer_sgsf;
 
 #ifdef _MPI
   MPI_Request *mpi_out_requests;
@@ -113,10 +113,10 @@ protected:
 #endif
 
   // Dynamic grid variables:
-  array<double*> ndA_dyn_fpts_r;
-  array<double*> J_dyn_fpts_r;
-  array<double*> disu_GCL_fpts_r;
-  array<double*> norm_tconf_GCL_fpts_r;
+  arrayt<double*> ndA_dyn_fpts_r;
+  arrayt<double*> J_dyn_fpts_r;
+  arrayt<double*> disu_GCL_fpts_r;
+  arrayt<double*> norm_tconf_GCL_fpts_r;
 
   double temp_u_GCL_r;
   double temp_f_GCL_r;

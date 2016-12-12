@@ -26,7 +26,7 @@
 #pragma once
 
 #include <string>
-#include "array.h"
+#include "arrayt.h"
 
 class cubature_1d
 {
@@ -69,10 +69,10 @@ public:
   int n_pts;
 
   // location of cubature_1d points
-  array<double> locs;
+  arrayt<double> locs;
 
   // weight of cubature_1d points
-  array<double> weights;
+  arrayt<double> weights;
   
   // cubature data file
   ifstream datfile;

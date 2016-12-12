@@ -100,21 +100,21 @@ public:
 	void SetValZero(void);
   
   /*!
-   * \brief constructor from array
+   * \brief constructor from arrayt
    * \param[in] size - number of elements locally
-   * \param[in] u_array - vector stored as array being copied
+   * \param[in] u_arrayt - vector stored as arrayt being copied
    */
-  explicit CSysVector(const unsigned long & size, const double* u_array);
+  explicit CSysVector(const unsigned long & size, const double* u_arrayt);
   
   /*!
-   * \brief constructor from array
+   * \brief constructor from arrayt
    * \param[in] numBlk - number of blocks locally
    * \param[in] numBlkDomain - number of blocks locally (without g cells)
    * \param[in] numVar - number of variables in each block
-   * \param[in] u_array - vector stored as array being copied
+   * \param[in] u_arrayt - vector stored as arrayt being copied
    */
   explicit CSysVector(const unsigned long & numBlk, const unsigned long & numBlkDomain, const unsigned short & numVar,
-                      const double* u_array);
+                      const double* u_arrayt);
   
   /*!
    * \brief class destructor
@@ -263,11 +263,11 @@ public:
   double norm() const;
   
   /*!
-   * \brief copies the contents of the calling CSysVector into an array
-   * \param[out] u_array - array into which information is being copied
-   * \pre u_array must be allocated and have the same size as CSysVector
+   * \brief copies the contents of the calling CSysVector into an arrayt
+   * \param[out] u_arrayt - arrayt into which information is being copied
+   * \pre u_arrayt must be allocated and have the same size as CSysVector
    */
-  void CopyToArray(double* u_array);
+  void CopyToarrayt(double* u_arrayt);
   
   /*!
 	 * \brief Subtract val_residual to the residual.

@@ -28,7 +28,7 @@
 #include <cmath>
 
 #include "../include/global.h"
-#include "../include/array.h"
+#include "../include/arrayt.h"
 #include "../include/input.h"
 #include "../include/geometry.h"
 #include "../include/solver.h"
@@ -149,8 +149,8 @@ int get_bc_number(string& bcname) {
 }
 
 void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
-  array<double> xv;
-  array<int> c2v,c2n_v,ctype,bctype_c,ic2icg,iv2ivg;
+  arrayt<double> xv;
+  arrayt<int> c2v,c2n_v,ctype,bctype_c,ic2icg,iv2ivg;
 
   /*! Reading vertices and cells. */
   ReadMesh(run_input.mesh_file, xv, c2v, c2n_v, ctype, ic2icg, iv2ivg, FlowSol->num_eles, FlowSol->num_verts, Mesh.n_verts_global, FlowSol);
@@ -162,8 +162,8 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
   /// Set connectivity
   /////////////////////////////////////////////////
 
-  array<int> f2c,f2loc_f,c2f,c2e,f2v,f2nv;
-  array<int> rot_tag,unmatched_inters;
+  arrayt<int> f2c,f2loc_f,c2f,c2e,f2v,f2nv;
+  arrayt<int> rot_tag,unmatched_inters;
   int n_unmatched_inters;
 
   // cannot have more than num_eles*6 faces
@@ -182,12 +182,12 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
   Mesh.v2n_e.setup(Mesh.n_verts);
   Mesh.v2n_e.initialize_to_zero();
 
-  // Initialize arrays to -1
+  // Initialize arrayts to -1
   f2c.initialize_to_value(-1);
   f2loc_f.initialize_to_value(-1);
   c2f.initialize_to_value(-1);
 
-  array<int> icvsta, icvert;
+  arrayt<int> icvsta, icvert;
 
   // Compute connectivity
   if (FlowSol->rank==0) cout << "Setting up mesh connectivity" << endl;
@@ -272,7 +272,7 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
   FlowSol->mesh_eles(3) = &FlowSol->mesh_eles_pris;
   FlowSol->mesh_eles(4) = &FlowSol->mesh_eles_hexas;
 
-  array<int> max_n_spts(FlowSol->n_ele_types);
+  arrayt<int> max_n_spts(FlowSol->n_ele_types);
   max_n_spts(0) = max_n_spts_per_tri;
   max_n_spts(1) = max_n_spts_per_quad;
   max_n_spts(2) = max_n_spts_per_tet;
@@ -301,7 +301,7 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
   if (FlowSol->rank==0) cout << "done initializing elements" << endl;
 
   // Set shape for each cell
-  array<int> local_c(FlowSol->num_eles);
+  arrayt<int> local_c(FlowSol->num_eles);
 
   int tris_count = 0;
   int quads_count = 0;
@@ -309,7 +309,7 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
   int pris_count = 0;
   int hexas_count = 0;
 
-  array<double> pos(FlowSol->n_dims);
+  arrayt<double> pos(FlowSol->n_dims);
 
   if (FlowSol->rank==0) cout << "setting elements shape ... ";
   for (int i=0;i<FlowSol->num_eles;i++) {
@@ -489,10 +489,10 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
   // Split the cyclic faces as being internal or mpi faces
   // -------------------------------------------------------
 
-  array<double> loc_center_inter_0(FlowSol->n_dims),loc_center_inter_1(FlowSol->n_dims);
-  array<double> loc_vert_0(MAX_V_PER_F,FlowSol->n_dims),loc_vert_1(MAX_V_PER_F,FlowSol->n_dims);
+  arrayt<double> loc_center_inter_0(FlowSol->n_dims),loc_center_inter_1(FlowSol->n_dims);
+  arrayt<double> loc_vert_0(MAX_V_PER_F,FlowSol->n_dims),loc_vert_1(MAX_V_PER_F,FlowSol->n_dims);
 
-  array<double> delta_cyclic(FlowSol->n_dims);
+  arrayt<double> delta_cyclic(FlowSol->n_dims);
   delta_cyclic(0) = run_input.dx_cyclic;
   delta_cyclic(1) = run_input.dy_cyclic;
   if (FlowSol->n_dims==3) {
@@ -569,7 +569,7 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
   //  Initialize MPI faces
   //  --------------------------------
 
-  array<int> f_mpi2f(max_inters);
+  arrayt<int> f_mpi2f(max_inters);
   FlowSol->n_mpi_inters = 0;
   int n_seg_mpi_inters=0;
   int n_tri_mpi_inters=0;
@@ -608,15 +608,15 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
   FlowSol->mesh_mpi_inters(1).setup(n_tri_mpi_inters,1);
   FlowSol->mesh_mpi_inters(2).setup(n_quad_mpi_inters,2);
 
-  array<int> mpifaces_part(FlowSol->nproc);
+  arrayt<int> mpifaces_part(FlowSol->nproc);
 
-  // Call function that takes in f_mpi2f,f2v and returns a new array f_mpi2f, and an array mpiface_part
+  // Call function that takes in f_mpi2f,f2v and returns a new arrayt f_mpi2f, and an arrayt mpiface_part
   // that contains the number of faces to send to each processor
-  // the new array f_mpi2f is in good order i.e. proc1,proc2,....
+  // the new arrayt f_mpi2f is in good order i.e. proc1,proc2,....
 
   match_mpifaces(f2v,f2nv,xv,f_mpi2f,mpifaces_part,delta_cyclic,FlowSol->n_mpi_inters,tol,FlowSol);
 
-  array<int> rot_tag_mpi(FlowSol->n_mpi_inters);
+  arrayt<int> rot_tag_mpi(FlowSol->n_mpi_inters);
   find_rot_mpifaces(f2v,f2nv,xv,f_mpi2f,rot_tag_mpi,mpifaces_part,delta_cyclic,FlowSol->n_mpi_inters,tol,FlowSol);
 
   //Initialize the mpi faces
@@ -842,9 +842,9 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
 
     /*! Code paraphrased from SU2 */
 
-    array<int> n_seg_inters_array(FlowSol->nproc);
-    array<int> n_tri_inters_array(FlowSol->nproc);
-    array<int> n_quad_inters_array(FlowSol->nproc);
+    arrayt<int> n_seg_inters_arrayt(FlowSol->nproc);
+    arrayt<int> n_tri_inters_arrayt(FlowSol->nproc);
+    arrayt<int> n_quad_inters_arrayt(FlowSol->nproc);
     int n_global_seg_noslip_inters = 0;
     int n_global_tri_noslip_inters = 0;
     int n_global_quad_noslip_inters = 0;
@@ -865,9 +865,9 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
     MPI_Allreduce(&n_tri_noslip_inters, &max_tri_noslip_inters, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
     MPI_Allreduce(&n_quad_noslip_inters, &max_quad_noslip_inters, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
-    MPI_Allgather(&n_seg_noslip_inters, 1, MPI_INT, n_seg_inters_array.get_ptr_cpu(), 1, MPI_INT, MPI_COMM_WORLD);
-    MPI_Allgather(&n_tri_noslip_inters, 1, MPI_INT, n_tri_inters_array.get_ptr_cpu(), 1, MPI_INT, MPI_COMM_WORLD);
-    MPI_Allgather(&n_quad_noslip_inters, 1, MPI_INT, n_quad_inters_array.get_ptr_cpu(), 1, MPI_INT, MPI_COMM_WORLD);
+    MPI_Allgather(&n_seg_noslip_inters, 1, MPI_INT, n_seg_inters_arrayt.get_ptr_cpu(), 1, MPI_INT, MPI_COMM_WORLD);
+    MPI_Allgather(&n_tri_noslip_inters, 1, MPI_INT, n_tri_inters_arrayt.get_ptr_cpu(), 1, MPI_INT, MPI_COMM_WORLD);
+    MPI_Allgather(&n_quad_noslip_inters, 1, MPI_INT, n_quad_inters_arrayt.get_ptr_cpu(), 1, MPI_INT, MPI_COMM_WORLD);
 
     // Set loop counters to max. inters on any partition
     n_seg_noslip_inters = max_seg_noslip_inters;
@@ -876,7 +876,7 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
 
 #endif
 
-    // Allocate arrays for coordinates of points on no-slip boundaries
+    // Allocate arrayts for coordinates of points on no-slip boundaries
     FlowSol->loc_noslip_bdy.setup(FlowSol->n_bdy_inter_types);
     FlowSol->loc_noslip_bdy(0).setup(n_fpts_per_inter_seg,n_seg_noslip_inters,FlowSol->n_dims);
     FlowSol->loc_noslip_bdy(1).setup(n_fpts_per_inter_tri,n_tri_noslip_inters,FlowSol->n_dims);
@@ -934,7 +934,7 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
 
 #ifdef _MPI
 
-    // Allocate global arrays for coordinates of points on no-slip boundaries
+    // Allocate global arrayts for coordinates of points on no-slip boundaries
     FlowSol->loc_noslip_bdy_global.setup(FlowSol->n_bdy_inter_types);
 
     FlowSol->loc_noslip_bdy_global(0).setup(n_fpts_per_inter_seg,max_seg_noslip_inters,FlowSol->nproc*FlowSol->n_dims);
@@ -959,7 +959,7 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
 
     // Calculate distance of every solution point to nearest point on no-slip boundary for every partition
     for(int i=0;i<FlowSol->n_ele_types;i++)
-      FlowSol->mesh_eles(i)->calc_wall_distance_parallel(n_seg_inters_array,n_tri_inters_array,n_quad_inters_array,FlowSol->loc_noslip_bdy_global,FlowSol->nproc);
+      FlowSol->mesh_eles(i)->calc_wall_distance_parallel(n_seg_inters_arrayt,n_tri_inters_arrayt,n_quad_inters_arrayt,FlowSol->loc_noslip_bdy_global,FlowSol->nproc);
 
 #else // serial
 
@@ -989,8 +989,8 @@ void GeoPreprocess(struct solution* FlowSol, mesh &Mesh) {
 
 }
 
-void ReadMesh(string& in_file_name, array<double>& out_xv, array<int>& out_c2v, array<int>& out_c2n_v, array<int>& out_ctype, array<int>& out_ic2icg,
-              array<int>& out_iv2ivg, int& out_n_cells, int& out_n_verts, int& out_n_verts_global, struct solution* FlowSol)
+void ReadMesh(string& in_file_name, arrayt<double>& out_xv, arrayt<int>& out_c2v, arrayt<int>& out_c2n_v, arrayt<int>& out_ctype, arrayt<int>& out_ic2icg,
+              arrayt<int>& out_iv2ivg, int& out_n_cells, int& out_n_verts, int& out_n_verts_global, struct solution* FlowSol)
 {
   if (FlowSol->rank==0)
     cout << endl << "----------------------- Mesh Preprocessing ------------------------" << endl;
@@ -1015,8 +1015,8 @@ void ReadMesh(string& in_file_name, array<double>& out_xv, array<int>& out_c2v, 
 
   if (FlowSol->rank==0) cout << "reading vertices" << endl;
 
-  // Call method to create array iv2ivg and modify c2v using local vertex indices
-  array<int> iv2ivg;
+  // Call method to create arrayt iv2ivg and modify c2v using local vertex indices
+  arrayt<int> iv2ivg;
   int n_verts;
   create_iv2ivg(iv2ivg,out_c2v,n_verts,out_n_cells);
   out_iv2ivg=iv2ivg;
@@ -1033,9 +1033,9 @@ void ReadMesh(string& in_file_name, array<double>& out_xv, array<int>& out_c2v, 
 
 }
 
-void ReadBound(string& in_file_name, array<int>& in_c2v, array<int>& in_c2n_v, array<int>& in_c2f, array<int>& in_f2v, array<int>& in_f2nv,
-               array<int>& in_ctype, array<int>& out_bctype, array<array<int> >& out_boundpts, array<int> &out_bc_list, array<int>& out_bound_flag,
-               array<int>& in_ic2icg, array<int>& in_icvsta, array<int>&in_icvert, array<int>& in_iv2ivg, int& in_n_cells, int& in_n_verts,
+void ReadBound(string& in_file_name, arrayt<int>& in_c2v, arrayt<int>& in_c2n_v, arrayt<int>& in_c2f, arrayt<int>& in_f2v, arrayt<int>& in_f2nv,
+               arrayt<int>& in_ctype, arrayt<int>& out_bctype, arrayt<arrayt<int> >& out_boundpts, arrayt<int> &out_bc_list, arrayt<int>& out_bound_flag,
+               arrayt<int>& in_ic2icg, arrayt<int>& in_icvsta, arrayt<int>&in_icvert, arrayt<int>& in_iv2ivg, int& in_n_cells, int& in_n_verts,
                struct solution* FlowSol)
 {
 
@@ -1048,8 +1048,8 @@ void ReadBound(string& in_file_name, array<int>& in_c2v, array<int>& in_c2n_v, a
   out_bctype.initialize_to_zero();
 
   if (run_input.mesh_format==0) {
-    array<array<int> > bccells;
-    array<array<int> > bcfaces;
+    arrayt<arrayt<int> > bccells;
+    arrayt<arrayt<int> > bcfaces;
     read_boundary_gambit(in_file_name, in_n_cells, in_ic2icg, out_bctype, out_bc_list, bccells, bcfaces);
     if (run_input.motion != 0)
       create_boundpts(out_boundpts, out_bc_list, out_bound_flag, bccells, bcfaces, in_c2f, in_f2v, in_f2nv);
@@ -1064,8 +1064,8 @@ void ReadBound(string& in_file_name, array<int>& in_c2v, array<int>& in_c2n_v, a
   if (FlowSol->rank==0) cout << "done reading boundary conditions" << endl;
 }
 
-void create_boundpts(array<array<int> >& out_boundpts, array<int>& in_bclist, array<int>& out_bound_flag, array<array<int> >& in_bccells,
-                     array<array<int> >& in_bcfaces, array<int>& in_c2f, array<int>& in_f2v, array<int>& in_f2nv)
+void create_boundpts(arrayt<arrayt<int> >& out_boundpts, arrayt<int>& in_bclist, arrayt<int>& out_bound_flag, arrayt<arrayt<int> >& in_bccells,
+                     arrayt<arrayt<int> >& in_bcfaces, arrayt<int>& in_c2f, arrayt<int>& in_f2v, arrayt<int>& in_f2nv)
 {
   int iv, ivg, ic, k, loc_k, nv;
   int n_faces, bcflag;
@@ -1092,7 +1092,7 @@ void create_boundpts(array<array<int> >& out_boundpts, array<int>& in_bclist, ar
   /** --- CREATE BOUNDARY->POINTS STRUCTURE ---
     want: iv = boundpts(bcflag,ivert); */
   out_boundpts.setup(n_bcs);
-  array<set<int> > Bounds(n_bcs);
+  arrayt<set<int> > Bounds(n_bcs);
   for (int i=0; i<n_bcs; i++) {
     nv = 0;
     bcflag = in_bclist(i);
@@ -1119,8 +1119,8 @@ void create_boundpts(array<array<int> >& out_boundpts, array<int>& in_bclist, ar
 }
 
 // Method to read boundary edges in mesh file
-void read_boundary_gambit(string& in_file_name, int &in_n_cells, array<int>& in_ic2icg, array<int>& out_bctype, array<int> &out_bclist,
-                          array<array<int> >& out_bccells, array<array<int> >& out_bcfaces)
+void read_boundary_gambit(string& in_file_name, int &in_n_cells, arrayt<int>& in_ic2icg, arrayt<int>& out_bctype, arrayt<int> &out_bclist,
+                          arrayt<arrayt<int> >& out_bccells, arrayt<arrayt<int> >& out_bcfaces)
 {
 
   // input: ic2icg
@@ -1129,7 +1129,7 @@ void read_boundary_gambit(string& in_file_name, int &in_n_cells, array<int>& in_
   char buf[BUFSIZ]={""};
   ifstream mesh_file;
 
-  array<int> cell_list(in_n_cells);
+  arrayt<int> cell_list(in_n_cells);
 
   for (int i=0;i<in_n_cells;i++)
     cell_list(i) = in_ic2icg(i);
@@ -1306,9 +1306,9 @@ void read_boundary_gambit(string& in_file_name, int &in_n_cells, array<int>& in_
   mesh_file.close();
 }
 
-void read_boundary_gmsh(string& in_file_name, int &in_n_cells, array<int>& in_ic2icg, array<int>& in_c2v, array<int>& in_c2n_v, array<int>& out_bctype,
-                        array<int> &out_bclist, array<int> &out_bound_flag, array<array<int> >& out_boundpts, array<int>& in_iv2ivg,
-                        int in_n_verts, array<int>& in_ctype, array<int>& in_icvsta, array<int>& in_icvert, struct solution* FlowSol)
+void read_boundary_gmsh(string& in_file_name, int &in_n_cells, arrayt<int>& in_ic2icg, arrayt<int>& in_c2v, arrayt<int>& in_c2n_v, arrayt<int>& out_bctype,
+                        arrayt<int> &out_bclist, arrayt<int> &out_bound_flag, arrayt<arrayt<int> >& out_boundpts, arrayt<int>& in_iv2ivg,
+                        int in_n_verts, arrayt<int>& in_ctype, arrayt<int>& in_icvsta, arrayt<int>& in_icvert, struct solution* FlowSol)
 {
   string str;
 
@@ -1358,8 +1358,8 @@ void read_boundary_gmsh(string& in_file_name, int &in_n_cells, array<int>& in_ic
   mesh_file   >> n_entities;   // num cells in mesh
   mesh_file.getline(buf,BUFSIZ);  // clear rest of line
 
-  array<int> vlist_bound(9), vlist_cell(9);
-  array<int> vlist_local(9);
+  arrayt<int> vlist_bound(9), vlist_cell(9);
+  arrayt<int> vlist_local(9);
 
   int found, num_v_per_f;
   int num_face_vert;
@@ -1369,9 +1369,9 @@ void read_boundary_gmsh(string& in_file_name, int &in_n_cells, array<int>& in_ic
 
   int sta_ind,end_ind;
 
-  // --- setup vertex->bcflag array ---
+  // --- setup vertex->bcflag arrayt ---
   out_boundpts.setup(n_bcs);
-  array<set<int> > Bounds;
+  arrayt<set<int> > Bounds;
   Bounds.setup(n_bcs);
 
   //--- overwrite bc_list with bcflag (previously held gmsh bcid) ---
@@ -1541,7 +1541,7 @@ void read_boundary_gmsh(string& in_file_name, int &in_n_cells, array<int>& in_ic
   //cout << "  Number of Boundary Faces: " << bdy_count << endl;
 }
 
-void read_vertices_gambit(string& in_file_name, int in_n_verts, int &out_n_verts_global, array<int> &in_iv2ivg, array<double> &out_xv, solution *FlowSol)
+void read_vertices_gambit(string& in_file_name, int in_n_verts, int &out_n_verts_global, arrayt<int> &in_iv2ivg, arrayt<double> &out_xv, solution *FlowSol)
 {
 
   // Now open gambit file and read the vertices
@@ -1591,7 +1591,7 @@ void read_vertices_gambit(string& in_file_name, int in_n_verts, int &out_n_verts
 
 }
 
-void read_vertices_gmsh(string& in_file_name, int in_n_verts, int& out_n_verts_global, array<int> &in_iv2ivg, array<double> &out_xv, struct solution* FlowSol)
+void read_vertices_gmsh(string& in_file_name, int in_n_verts, int& out_n_verts_global, arrayt<int> &in_iv2ivg, arrayt<double> &out_xv, struct solution* FlowSol)
 {
 
   string str;
@@ -1639,11 +1639,11 @@ void read_vertices_gmsh(string& in_file_name, int in_n_verts, int& out_n_verts_g
 
 }
 
-void create_iv2ivg(array<int> &inout_iv2ivg, array<int> &inout_c2v, int &out_n_verts, int in_n_cells)
+void create_iv2ivg(arrayt<int> &inout_iv2ivg, arrayt<int> &inout_c2v, int &out_n_verts, int in_n_cells)
 {
 
-  array<int> vrtlist(in_n_cells*MAX_V_PER_C);
-  array<int> temp(in_n_cells*MAX_V_PER_C);
+  arrayt<int> vrtlist(in_n_cells*MAX_V_PER_C);
+  arrayt<int> temp(in_n_cells*MAX_V_PER_C);
 
   int icount = 0;
   for (int i=0;i<in_n_cells;i++)
@@ -1679,12 +1679,12 @@ void create_iv2ivg(array<int> &inout_iv2ivg, array<int> &inout_c2v, int &out_n_v
   for (int i=0;i<out_n_verts;i++)
     inout_iv2ivg(i) = temp(i);
 
-  //vrtlist.~array();
-  //temp.~array();
+  //vrtlist.~arrayt();
+  //temp.~arrayt();
 
 #ifdef _MPI
 
-  // Now modify array ic2icg
+  // Now modify arrayt ic2icg
   for (int i=0;i<in_n_cells;i++) {
       for (int j=0;j<MAX_V_PER_C;j++) {
           if (inout_c2v(i,j) != -1) {
@@ -1703,7 +1703,7 @@ void create_iv2ivg(array<int> &inout_iv2ivg, array<int> &inout_c2v, int &out_n_v
 
 }
 
-void read_connectivity_gambit(string& in_file_name, int &out_n_cells, array<int> &out_c2v, array<int> &out_c2n_v, array<int> &out_ctype, array<int> &out_ic2icg, struct solution* FlowSol)
+void read_connectivity_gambit(string& in_file_name, int &out_n_cells, arrayt<int> &out_c2v, arrayt<int> &out_c2n_v, arrayt<int> &out_ctype, arrayt<int> &out_ic2icg, struct solution* FlowSol)
 {
 
   int n_verts_global,n_cells_global;
@@ -1764,7 +1764,7 @@ void read_connectivity_gambit(string& in_file_name, int &out_n_cells, array<int>
   out_ctype.setup(out_n_cells); // stores the type of cell
   out_ic2icg.setup(out_n_cells);
 
-  // Initialize arrays to -1
+  // Initialize arrayts to -1
   for (int i=0;i<out_n_cells;i++) {
       out_c2n_v(i)=-1;
       out_ctype(i) = -1;
@@ -1878,7 +1878,7 @@ void read_connectivity_gambit(string& in_file_name, int &out_n_cells, array<int>
 
 }
 
-void read_connectivity_gmsh(string& in_file_name, int &out_n_cells, array<int> &out_c2v, array<int> &out_c2n_v, array<int> &out_ctype, array<int> &out_ic2icg, struct solution* FlowSol)
+void read_connectivity_gmsh(string& in_file_name, int &out_n_cells, arrayt<int> &out_c2v, arrayt<int> &out_c2n_v, arrayt<int> &out_ctype, arrayt<int> &out_ic2icg, struct solution* FlowSol)
 {
   int n_verts_global,n_cells_global,n_bnds;
   int dummy,dummy2;
@@ -1979,7 +1979,7 @@ void read_connectivity_gmsh(string& in_file_name, int &out_n_cells, array<int> &
   out_ctype.setup(out_n_cells);
   out_ic2icg.setup(out_n_cells);
 
-  // Initialize arrays to -1
+  // Initialize arrayts to -1
   for (int i=0;i<out_n_cells;i++) {
       out_c2n_v(i)=-1;
       out_ctype(i) = -1;
@@ -2137,18 +2137,18 @@ void read_connectivity_gmsh(string& in_file_name, int &out_n_cells, array<int> &
 }
 
 #ifdef _MPI
-void repartition_mesh(int &out_n_cells, array<int> &out_c2v, array<int> &out_c2n_v, array<int> &out_ctype, array<int> &out_ic2icg, struct solution* FlowSol)
+void repartition_mesh(int &out_n_cells, arrayt<int> &out_c2v, arrayt<int> &out_c2n_v, arrayt<int> &out_ctype, arrayt<int> &out_ic2icg, struct solution* FlowSol)
 {
 
 
-  array<int> c2v_temp = out_c2v;
-  array<int> c2n_v_temp = out_c2n_v;
-  array<int> ctype_temp = out_ctype;
-  array<int> ic2icg_temp = out_ic2icg;
+  arrayt<int> c2v_temp = out_c2v;
+  arrayt<int> c2n_v_temp = out_c2n_v;
+  arrayt<int> ctype_temp = out_ctype;
+  arrayt<int> ic2icg_temp = out_ic2icg;
 
-  // Create array that stores the number of cells per proc
+  // Create arrayt that stores the number of cells per proc
   int klocal = out_n_cells;
-  array<int> kprocs(FlowSol->nproc);
+  arrayt<int> kprocs(FlowSol->nproc);
 
   MPI_Allgather(&klocal,1,MPI_INT,kprocs.get_ptr_cpu(),1,MPI_INT,MPI_COMM_WORLD);
 
@@ -2277,15 +2277,15 @@ void repartition_mesh(int &out_n_cells, array<int> &out_c2v, array<int> &out_c2n
   if (FlowSol->rank==0) cout << "After parmetis " << endl;
 
   // Printing results of parmetis
-  //array<int> part_array(klocal);
+  //arrayt<int> part_arrayt(klocal);
   //for (i=0;i<klocal;i++)
   //{
-  //  part_array(i) = part[i];
+  //  part_arrayt(i) = part[i];
   //}
-  //part_array.print_to_file(FlowSol->rank);
+  //part_arrayt.print_to_file(FlowSol->rank);
   //cout << "After print" << endl;
 
-  // Now creating new c2v array
+  // Now creating new c2v arrayt
   int **outlist = (int**) calloc(FlowSol->nproc,sizeof(int*));
   int **outlist_c2n_v = (int**) calloc(FlowSol->nproc,sizeof(int*));
   int **outlist_ctype = (int**) calloc(FlowSol->nproc,sizeof(int*));
@@ -2309,7 +2309,7 @@ void repartition_mesh(int &out_n_cells, array<int> &out_c2v, array<int> &out_c2n
   for (int p=0;p<FlowSol->nproc;p++)
     totalinK += inK[p];
 
-  // declare new array c2v
+  // declare new arrayt c2v
   int **new_c2v = (int**) calloc(totalinK,sizeof(int*));
   new_c2v[0] = (int*) calloc(totalinK*MAX_V_PER_C,sizeof(int));
   for (int i=1;i<totalinK;i++)
@@ -2333,7 +2333,7 @@ void repartition_mesh(int &out_n_cells, array<int> &out_c2v, array<int> &out_c2n
   MPI_Status *instatus = (MPI_Status*) calloc(FlowSol->nproc,sizeof(MPI_Status));
   MPI_Status *outstatus= (MPI_Status*) calloc(FlowSol->nproc,sizeof(MPI_Status));
 
-  // Make exchange for arrays c2v,c2n_v,ctype,ic2icg
+  // Make exchange for arrayts c2v,c2n_v,ctype,ic2icg
   int cnt=0;
   for (int p=0;p<FlowSol->nproc;p++)
     {
@@ -2409,11 +2409,11 @@ void repartition_mesh(int &out_n_cells, array<int> &out_c2v, array<int> &out_c2n
 #endif
 
 /*! method to create list of faces & edges from the mesh */
-void CompConnectivity(array<int>& in_c2v, array<int>& in_c2n_v, array<int>& in_ctype, array<int>& out_c2f, array<int>& out_c2e,
-                      array<int>& out_f2c, array<int>& out_f2loc_f, array<int>& out_f2v, array<int>& out_f2nv,
-                      array<int>& out_e2v, array<int>& out_v2n_e, array<array<int> >& out_v2e,
-                      array<int>& out_rot_tag, array<int>& out_unmatched_faces, int& out_n_unmatched_faces,
-                      array<int>& out_icvsta, array<int>& out_icvert, int& out_n_faces, int& out_n_edges,
+void CompConnectivity(arrayt<int>& in_c2v, arrayt<int>& in_c2n_v, arrayt<int>& in_ctype, arrayt<int>& out_c2f, arrayt<int>& out_c2e,
+                      arrayt<int>& out_f2c, arrayt<int>& out_f2loc_f, arrayt<int>& out_f2v, arrayt<int>& out_f2nv,
+                      arrayt<int>& out_e2v, arrayt<int>& out_v2n_e, arrayt<arrayt<int> >& out_v2e,
+                      arrayt<int>& out_rot_tag, arrayt<int>& out_unmatched_faces, int& out_n_unmatched_faces,
+                      arrayt<int>& out_icvsta, arrayt<int>& out_icvert, int& out_n_faces, int& out_n_edges,
                       struct solution* FlowSol)
 {
 
@@ -2429,16 +2429,16 @@ void CompConnectivity(array<int>& in_c2v, array<int>& in_c2n_v, array<int>& in_c
   n_cells = in_c2v.get_dim(0);
   n_verts = in_c2v.get_max()+1;
 
-  //array<int> num_v_per_c(5); // for 5 element types
-  array<int> vlist_loc(MAX_V_PER_F),vlist_loc2(MAX_V_PER_F),vlist_glob(MAX_V_PER_F),vlist_glob2(MAX_V_PER_F); // faces cannot have more than 4 vertices
+  //arrayt<int> num_v_per_c(5); // for 5 element types
+  arrayt<int> vlist_loc(MAX_V_PER_F),vlist_loc2(MAX_V_PER_F),vlist_glob(MAX_V_PER_F),vlist_glob2(MAX_V_PER_F); // faces cannot have more than 4 vertices
 
-  array<int> v2n_c;
+  arrayt<int> v2n_c;
 
   /**
    * "Moving pointer" that points to next unassigned entry in icvert (for each vertex)
    * (see descriptions of icvsta & icvert)
    */
-  array<int> icvsta2;
+  arrayt<int> icvsta2;
 
   // Number of vertices for different type of cells
   //num_v_per_c(0) = 3; // tri
@@ -2466,7 +2466,7 @@ void CompConnectivity(array<int>& in_c2v, array<int>& in_c2n_v, array<int>& in_c
    */
   out_icvsta.setup(n_verts+1);
 
-  // Initialize arrays to zero
+  // Initialize arrayts to zero
   v2n_c.initialize_to_zero();
   icvsta2.initialize_to_zero();
   out_icvsta.initialize_to_zero();
@@ -2518,8 +2518,8 @@ void CompConnectivity(array<int>& in_c2v, array<int>& in_c2n_v, array<int>& in_c
     vector<int> e2v;
     vector<set<int> > v2e(n_verts);
 
-      // Create array ic2e
-      array<int> num_e_per_c(5);
+      // Create arrayt ic2e
+      arrayt<int> num_e_per_c(5);
       out_c2e.initialize_to_value(-1);
 
       num_e_per_c(0) = 3;
@@ -2815,7 +2815,7 @@ void get_vert_loc(int& in_ctype, int& in_n_spts, int& in_vert, int& out_v)
 
 
 
-void get_vlist_loc_edge(int& in_ctype, int& in_n_spts, int& in_edge, array<int>& out_vlist_loc)
+void get_vlist_loc_edge(int& in_ctype, int& in_n_spts, int& in_edge, arrayt<int>& out_vlist_loc)
 {
   if (in_ctype==0 || in_ctype==1)
     {
@@ -3072,7 +3072,7 @@ void get_vlist_loc_edge(int& in_ctype, int& in_n_spts, int& in_edge, array<int>&
     }
 }
 
-void get_vlist_loc_face(int& in_ctype, int& in_n_spts, int& in_face, array<int>& out_vlist_loc, int& num_v_per_f)
+void get_vlist_loc_face(int& in_ctype, int& in_n_spts, int& in_face, arrayt<int>& out_vlist_loc, int& num_v_per_f)
 {
 
   if (in_ctype==0) // Triangle
@@ -3363,7 +3363,7 @@ void get_vlist_loc_face(int& in_ctype, int& in_n_spts, int& in_face, array<int>&
 
 }
 
-void compare_faces(array<int>& vlist1, array<int>& vlist2, int& num_v_per_f, int& found, int& rtag)
+void compare_faces(arrayt<int>& vlist1, arrayt<int>& vlist2, int& num_v_per_f, int& found, int& rtag)
 {
   /* Looking at a face from *inside* the cell, the nodes *must* be numbered in *CW* order
    * (this is in agreement with Gambit; Gmsh does not care about local face numberings)
@@ -3460,7 +3460,7 @@ void compare_faces(array<int>& vlist1, array<int>& vlist2, int& num_v_per_f, int
 
 }
 
-void compare_faces_boundary(array<int>& vlist1, array<int>& vlist2, int& num_v_per_f, int& found)
+void compare_faces_boundary(arrayt<int>& vlist1, arrayt<int>& vlist2, int& num_v_per_f, int& found)
 {
 
   if ( !(num_v_per_f==2 || num_v_per_f==3 || num_v_per_f==4))
@@ -3486,7 +3486,7 @@ void compare_faces_boundary(array<int>& vlist1, array<int>& vlist2, int& num_v_p
 
 // method to compare two faces and check if they match
 
-void compare_cyclic_faces(array<double> &xvert1, array<double> &xvert2, int& num_v_per_f, int& rtag, array<double> &delta_cyclic, double tol, struct solution* FlowSol)
+void compare_cyclic_faces(arrayt<double> &xvert1, arrayt<double> &xvert2, int& num_v_per_f, int& rtag, arrayt<double> &delta_cyclic, double tol, struct solution* FlowSol)
 {
   int found = 0;
   if (FlowSol->n_dims==2)
@@ -3631,7 +3631,7 @@ void compare_cyclic_faces(array<double> &xvert1, array<double> &xvert2, int& num
 
 }
 
-bool check_cyclic(array<double> &delta_cyclic, array<double> &loc_center_inter_0, array<double> &loc_center_inter_1, double tol, struct solution* FlowSol)
+bool check_cyclic(arrayt<double> &delta_cyclic, arrayt<double> &loc_center_inter_0, arrayt<double> &loc_center_inter_1, double tol, struct solution* FlowSol)
 {
 
   bool output;
@@ -3665,7 +3665,7 @@ bool check_cyclic(array<double> &delta_cyclic, array<double> &loc_center_inter_0
 
 #ifdef _MPI
 
-void match_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& in_xv, array<int>& inout_f_mpi2f, array<int>& out_mpifaces_part, array<double> &delta_cyclic, int n_mpi_faces, double tol, struct solution* FlowSol)
+void match_mpifaces(arrayt<int> &in_f2v, arrayt<int> &in_f2nv, arrayt<double>& in_xv, arrayt<int>& inout_f_mpi2f, arrayt<int>& out_mpifaces_part, arrayt<double> &delta_cyclic, int n_mpi_faces, double tol, struct solution* FlowSol)
 {
 
   // TODO: THIS IS NOT OPTIMAL: GOES AS N^2 operations, try sorting and searching instead (cost will be 2*N*log(N)
@@ -3675,19 +3675,19 @@ void match_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& in_x
   int icount,p,p2,rtag;
   int iloc,irem;
 
-  array<int> matched(n_mpi_faces);
-  array<int> old_f_mpi2f;
+  arrayt<int> matched(n_mpi_faces);
+  arrayt<int> old_f_mpi2f;
 
   old_f_mpi2f = inout_f_mpi2f;
 
   MPI_Status instatus;
 
-  array<double> delta_zero(FlowSol->n_dims);
+  arrayt<double> delta_zero(FlowSol->n_dims);
   for (int m=0;m<FlowSol->n_dims;m++)
     delta_zero(m) = 0.;
 
   // Calculate the centroid of each face
-  array<double> loc_center_inter(FlowSol->n_dims,n_mpi_faces);
+  arrayt<double> loc_center_inter(FlowSol->n_dims,n_mpi_faces);
 
   for(i=0;i<n_mpi_faces;i++)
     {
@@ -3700,17 +3700,17 @@ void match_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& in_x
           loc_center_inter(m,i) += in_xv(in_f2v(iglob,k),m)/in_f2nv(iglob);
     }
 
-  // Initialize array matched with 0
+  // Initialize arrayt matched with 0
   for(i=0;i<n_mpi_faces;i++)
     matched(i) = 0;
 
-  //Initialize array mpifaces_part to 0
+  //Initialize arrayt mpifaces_part to 0
   for(i=0;i<FlowSol->nproc;i++)
     out_mpifaces_part(i) = 0;
 
   // Exchange the number of mpi_faces to receive
-  // Create array mpfaces_from
-  array<int> mpifaces_from(FlowSol->nproc);
+  // Create arrayt mpfaces_from
+  arrayt<int> mpifaces_from(FlowSol->nproc);
   MPI_Allgather( &n_mpi_faces,1,MPI_INT,mpifaces_from.get_ptr_cpu(),1,MPI_INT,MPI_COMM_WORLD);
 
   int max_mpi_faces = 0;
@@ -3718,9 +3718,9 @@ void match_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& in_x
     if (mpifaces_from(i) >= max_mpi_faces) max_mpi_faces = mpifaces_from(i);
 
   // Allocate the xyz_cent with the max_mpi_faces size;
-  array<double> in_loc_center_inter(FlowSol->n_dims,max_mpi_faces);
-  array<double> loc_center_1(FlowSol->n_dims);
-  array<double> loc_center_2(FlowSol->n_dims);
+  arrayt<double> in_loc_center_inter(FlowSol->n_dims,max_mpi_faces);
+  arrayt<double> loc_center_1(FlowSol->n_dims);
+  arrayt<double> loc_center_2(FlowSol->n_dims);
 
   // Begin the exchange
   icount = 0;
@@ -3816,7 +3816,7 @@ void match_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& in_x
     }
 }
 
-void find_rot_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& in_xv, array<int>& in_f_mpi2f, array<int> &out_rot_tag_mpi, array<int> &mpifaces_part, array<double> delta_cyclic, int n_mpi_faces, double tol, struct solution* FlowSol)
+void find_rot_mpifaces(arrayt<int> &in_f2v, arrayt<int> &in_f2nv, arrayt<double>& in_xv, arrayt<int>& in_f_mpi2f, arrayt<int> &out_rot_tag_mpi, arrayt<int> &mpifaces_part, arrayt<double> delta_cyclic, int n_mpi_faces, double tol, struct solution* FlowSol)
 {
 
   int Nout,i,i_mpi,p,iglob,k;
@@ -3824,8 +3824,8 @@ void find_rot_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& i
   int count1,count2,count3;
   int found,rtag;
 
-  array<double> xvert1(MAX_V_PER_F,FlowSol->n_dims); // 4 is maximum number of vertices per face
-  array<double> xvert2(MAX_V_PER_F,FlowSol->n_dims);
+  arrayt<double> xvert1(MAX_V_PER_F,FlowSol->n_dims); // 4 is maximum number of vertices per face
+  arrayt<double> xvert2(MAX_V_PER_F,FlowSol->n_dims);
 
   // Count the number of messages to send
   int request_count = 0;
@@ -3845,8 +3845,8 @@ void find_rot_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& i
         n_vert_out++;
     }
 
-  array<double> xyz_vert_out(FlowSol->n_dims,n_vert_out);
-  array<double> xyz_vert_in(FlowSol->n_dims,n_vert_out);
+  arrayt<double> xyz_vert_out(FlowSol->n_dims,n_vert_out);
+  arrayt<double> xyz_vert_in(FlowSol->n_dims,n_vert_out);
 
   int Nmess = 0;
   int sk = 0;
@@ -3889,8 +3889,8 @@ void find_rot_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& i
 
   MPI_Barrier(MPI_COMM_WORLD);
 
-  array<double> loc_vert_0(MAX_V_PER_F,FlowSol->n_dims);
-  array<double> loc_vert_1(MAX_V_PER_F,FlowSol->n_dims);
+  arrayt<double> loc_vert_0(MAX_V_PER_F,FlowSol->n_dims);
+  arrayt<double> loc_vert_1(MAX_V_PER_F,FlowSol->n_dims);
 
   count1 = 0;
   for(i_mpi=0;i_mpi<n_mpi_faces;i_mpi++)
@@ -3913,7 +3913,7 @@ void find_rot_mpifaces(array<int> &in_f2v, array<int> &in_f2nv, array<double>& i
 
 
 // method to compare two faces and check if they match
-void compare_mpi_faces(array<double> &xvert1, array<double> &xvert2, int& num_v_per_f, int& rtag, array<double> &delta_cyclic, double tol, struct solution* FlowSol)
+void compare_mpi_faces(arrayt<double> &xvert1, arrayt<double> &xvert2, int& num_v_per_f, int& rtag, arrayt<double> &delta_cyclic, double tol, struct solution* FlowSol)
 {
   int found = 0;
   if (FlowSol->n_dims==2)

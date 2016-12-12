@@ -26,7 +26,7 @@
 #pragma once
 
 #include <cmath>
-#include "array.h"
+#include "arrayt.h"
 
 #if defined _GPU
 #include "cuda_runtime_api.h"
@@ -34,13 +34,13 @@
 #endif
 
 /*! evaluate lagrange basis */
-double eval_lagrange(double in_r, int in_mode, array<double>& in_loc_pts);
+double eval_lagrange(double in_r, int in_mode, arrayt<double>& in_loc_pts);
 
 /*! evaluate derivative of lagrange basis */
-double eval_d_lagrange(double in_r, int in_mode, array<double>& in_loc_pts);
+double eval_d_lagrange(double in_r, int in_mode, arrayt<double>& in_loc_pts);
 
 /*! evaluate second derivative of lagrange basis */
-double eval_dd_lagrange(double in_r, int in_mode, array<double>& in_loc_pts);
+double eval_dd_lagrange(double in_r, int in_mode, arrayt<double>& in_loc_pts);
 
 /*! evaluate legendre basis */
 double eval_legendre(double in_r, int in_mode);
@@ -57,30 +57,30 @@ double eval_d_oesfr_1d(double in_r, int in_mode, int in_order);
 /*! evaluate derivative of Optimized Flux Reconstruction (OFR) basis */
 double eval_d_ofr_1d(double in_r, int in_mode, int in_order);
 
-void get_opp_3_tri(array<double>& opp_3, array<double>& loc_upts_tri, array<double>& loc_fpts_tri, array<double>& vandermonde_tri, array<double>& inv_vandermonde_tri, int n_upts_per_tri, int order, double c_tri, int vcjh_scheme_tri);
+void get_opp_3_tri(arrayt<double>& opp_3, arrayt<double>& loc_upts_tri, arrayt<double>& loc_fpts_tri, arrayt<double>& vandermonde_tri, arrayt<double>& inv_vandermonde_tri, int n_upts_per_tri, int order, double c_tri, int vcjh_scheme_tri);
 
-void get_opp_3_dg(array<double>& opp_3_dg, array<double>& loc_upts_tri, array<double>& loc_fpts_tri, int n_upts_per_tri, int order);
+void get_opp_3_dg(arrayt<double>& opp_3_dg, arrayt<double>& loc_upts_tri, arrayt<double>& loc_fpts_tri, int n_upts_per_tri, int order);
 
-void compute_modal_filter_1d(array <double>& filter_upts, array<double>& vandermonde, array<double>& inv_vandermonde, int N, int order);
+void compute_modal_filter_1d(arrayt <double>& filter_upts, arrayt<double>& vandermonde, arrayt<double>& inv_vandermonde, int N, int order);
 
-void compute_modal_filter_tri(array <double>& filter_upts, array<double>& vandermonde, array<double>& inv_vandermonde, int N, int order);
+void compute_modal_filter_tri(arrayt <double>& filter_upts, arrayt<double>& vandermonde, arrayt<double>& inv_vandermonde, int N, int order);
 
-void compute_modal_filter_tet(array <double>& filter_upts, array<double>& vandermonde, array<double>& inv_vandermonde, int N, int order);
+void compute_modal_filter_tet(arrayt <double>& filter_upts, arrayt<double>& vandermonde, arrayt<double>& inv_vandermonde, int N, int order);
 
-void compute_filt_matrix_tri(array<double>& Filt, array<double>& vandermonde_tri, array<double>& inv_vandermonde_tri, int n_upts_per_ele, int order, double c_tri, int vcjh_scheme_tri, array<double>& loc_upts_tri);
+void compute_filt_matrix_tri(arrayt<double>& Filt, arrayt<double>& vandermonde_tri, arrayt<double>& inv_vandermonde_tri, int n_upts_per_ele, int order, double c_tri, int vcjh_scheme_tri, arrayt<double>& loc_upts_tri);
 
 /*! evaluate divergenge of vcjh basis on triangle */
-double eval_div_dg_tri(array<double> &in_loc , int in_edge, int in_edge_fpt, int in_order, array<double> &in_loc_fpts_1d);
+double eval_div_dg_tri(arrayt<double> &in_loc , int in_edge, int in_edge_fpt, int in_order, arrayt<double> &in_loc_fpts_1d);
 
-/*! get intel mkl csr 4 array format (1 indexed column major) */
-void array_to_mklcsr(array<double>& in_array, array<double>& out_data, array<int>& out_cols, array<int>& out_b, array<int>& out_e);
+/*! get intel mkl csr 4 arrayt format (1 indexed column major) */
+void arrayt_to_mklcsr(arrayt<double>& in_arrayt, arrayt<double>& out_data, arrayt<int>& out_cols, arrayt<int>& out_b, arrayt<int>& out_e);
 
-void array_to_ellpack(array<double>& in_array, array<double>& out_data, array<int>& out_cols, int& nnz_per_row);
+void arrayt_to_ellpack(arrayt<double>& in_arrayt, arrayt<double>& out_data, arrayt<int>& out_cols, int& nnz_per_row);
 
 /*! map a square to triangle element */
-array<double> rs_to_ab(double in_r, double in_s);
+arrayt<double> rs_to_ab(double in_r, double in_s);
 
-array<double> rst_to_abc(double in_r, double in_s, double in_t);
+arrayt<double> rst_to_abc(double in_r, double in_s, double in_t);
 
 /*!  helper method to evaluate the gamma function for positive integers */
 double eval_gamma(int in_n);
@@ -117,26 +117,26 @@ bool is_perfect_cube(int in_a);
 
 int compare_ints(const void * a, const void *b);
 
-int index_locate_int(int value, int* array, int size);
+int index_locate_int(int value, int* arrayt, int size);
 
-void eval_isentropic_vortex(array<double>& pos, double time, double& rho, double& vx, double& vy, double& vz, double& p, int n_dims);
+void eval_isentropic_vortex(arrayt<double>& pos, double time, double& rho, double& vx, double& vy, double& vz, double& p, int n_dims);
 
-void eval_sine_wave_single(array<double>& pos, array<double>& wave_speed, double diff_coeff, double time, double& rho, array<double>& grad_rho, int n_dims);
+void eval_sine_wave_single(arrayt<double>& pos, arrayt<double>& wave_speed, double diff_coeff, double time, double& rho, arrayt<double>& grad_rho, int n_dims);
 
-void eval_sine_wave_group(array<double>& pos, array<double>& wave_speed, double diff_coeff, double time, double& rho, array<double>& grad_rho, int n_dims);
+void eval_sine_wave_group(arrayt<double>& pos, arrayt<double>& wave_speed, double diff_coeff, double time, double& rho, arrayt<double>& grad_rho, int n_dims);
 
-void eval_sphere_wave(array<double>& pos, array<double>& wave_speed, double time, double& rho, int n_dims);
+void eval_sphere_wave(arrayt<double>& pos, arrayt<double>& wave_speed, double time, double& rho, int n_dims);
 
-void eval_couette_flow(array<double>& pos, double in_gamma, double in_R_ref, double in_u_wall, double in_T_wall, double in_p_bound, double in_prandtl, double time, double& ene, array<double>& grad_ene, int n_dims);
+void eval_couette_flow(arrayt<double>& pos, double in_gamma, double in_R_ref, double in_u_wall, double in_T_wall, double in_p_bound, double in_prandtl, double time, double& ene, arrayt<double>& grad_ene, int n_dims);
 
-void eval_poly_ic(array<double>& pos, double rho, array<double>& ics, int n_dims);
+void eval_poly_ic(arrayt<double>& pos, double rho, arrayt<double>& ics, int n_dims);
 
 int factorial(int in_n);
 
 /*! Functions used in evaluation of shape functions and its 1st and 2nd derivatives
 BEGIN:*/
-// Convolution function: returns array representation of polynomial that is result of multiplication of polynomial1 and polynomial2
-array<double> convol(array<double> & polynomial1, array<double> & polynomial2);
+// Convolution function: returns arrayt representation of polynomial that is result of multiplication of polynomial1 and polynomial2
+arrayt<double> convol(arrayt<double> & polynomial1, arrayt<double> & polynomial2);
 
 // LagrangeP function: returns lagrange polynomial of order "order", with value of unity at given node number "node", after substituting
 // polynomial "subs" where independent variable in polynomial goes
@@ -146,60 +146,60 @@ array<double> convol(array<double> & polynomial1, array<double> & polynomial2);
  note that l^{1} _{2} (x) = 0 at x = xi(1) = 0.1
  l^{1} _{2} (x) = 1 at x = xi(2) = 0.3
 */
-array<double> LagrangeP(int order, int node, array<double> & subs);
+arrayt<double> LagrangeP(int order, int node, arrayt<double> & subs);
 
 // shapePoly4Tri function: the shape function T_I(r) in the polynomial format
 // it is computed as described in Hughes pp 166
 /*
-% Array values are coefficients of monomials of increasing order
+% arrayt values are coefficients of monomials of increasing order
 % I : index of node in triangle along lines (not global indeces)
 % following node ordering from Hughes, pp 169
 % nNodesSide: number of nodes in each side
 */
-array<double> shapePoly4Tri(int in_index, int nNodesSide);
+arrayt<double> shapePoly4Tri(int in_index, int nNodesSide);
 
 
 // multPoly function: multiplies polynomials symbolically by stacking them (puts them in different rows)
 template <typename T>
-array<T> multPoly(array<T> & p1, array<T> & p2);
+arrayt<T> multPoly(arrayt<T> & p1, arrayt<T> & p2);
 
 // nodeFunctionTri function: returns the complete shape function of triangles at a specific global node in_index
-// given in_n_spts, the total number of nodes  in the triangle, // and the index_location_array:
-// first row in index_location_array contains indeces of r arranged in ascending global node number;
+// given in_n_spts, the total number of nodes  in the triangle, // and the index_location_arrayt:
+// first row in index_location_arrayt contains indeces of r arranged in ascending global node number;
 // second row contains indeces of s arranged in ascending global node number;
 // third row contains indeces of t arranged in ascending global node number;
 // refer to Hughes pp 169 to see link between r/s indeces ordering and global indeces ordering
 
-array<double> nodeFunctionTri(int in_index, int in_n_spts, array<int> & index_location_array);
+arrayt<double> nodeFunctionTri(int in_index, int in_n_spts, arrayt<int> & index_location_arrayt);
 
 
-// linkTriangleNodes function: returns array with three rows as described above;
+// linkTriangleNodes function: returns arrayt with three rows as described above;
 // output from this function is eventually passed as a parameter to the nodeFunctionTri function
 
-array<int> linkTriangleNodes(int in_n_spts);
+arrayt<int> linkTriangleNodes(int in_n_spts);
 
 
 // addPoly function: returns a 3D matrix, the stacking in the 3rd dimension represents polynomial addition
 // adds polynomials by placing them in different layers
 
-array<double> addPoly(array<double> & p1, array<double> & p2);
+arrayt<double> addPoly(arrayt<double> & p1, arrayt<double> & p2);
 
 // diffPoly function: returns a 3D matrix that represents a polynomial differentiated with respect to a
 // dimension.
 
-array<double> diffPoly(array<double> & p, array<int> & term2Diff);
+arrayt<double> diffPoly(arrayt<double> & p, arrayt<int> & term2Diff);
 
 // evalPoly function: returns a double, which is the value of a polynomial "p" evaluated at coordinates coords;
-// the height of matrix representing polynomial p must equal the number of elements (columns) of array coords
+// the height of matrix representing polynomial p must equal the number of elements (columns) of arrayt coords
 
-double evalPoly(array<double> p, array<double> coords);
+double evalPoly(arrayt<double> p, arrayt<double> coords);
 
-// createEquispacedArray: returns array with nPoints values equispaced between a and b (in that order)
-array<double> createEquispacedArray(double a, double b, int nPoints);
+// createEquispacedarrayt: returns arrayt with nPoints values equispaced between a and b (in that order)
+arrayt<double> createEquispacedarrayt(double a, double b, int nPoints);
 
 // Check if all contents of polynomial are zero
 template <typename T>
-bool iszero(array<T> & poly);
+bool iszero(arrayt<T> & poly);
 
 // Calculate the number of sides given the number of nodes in triangle
 inline int calcNumSides(int nNodes)
@@ -210,29 +210,29 @@ inline int calcNumSides(int nNodes)
 
 // eval_dd_nodal_s_basis_new function: new implementation of function that finds nth derivatives with
 // respect to r or s at each of the triangle nodes
-void eval_dn_nodal_s_basis(array<double> &dd_nodal_s_basis,
-                           array<double> in_loc, int in_n_spts, int n_deriv);
+void eval_dn_nodal_s_basis(arrayt<double> &dd_nodal_s_basis,
+                           arrayt<double> in_loc, int in_n_spts, int n_deriv);
 
 /*! Linear equation solution by Gauss-Jordan elimination from Numerical Recipes (http://www.nr.com/) */
-void gaussj(int n, array<double>& A, array<double>& b);
+void gaussj(int n, arrayt<double>& A, arrayt<double>& b);
 
 /*! Filter resolution function used with Gaussian filter*/
-double flt_res(int N, array<double>& wf, array<double>& B, double k_0, double k_c, int ctype);
+double flt_res(int N, arrayt<double>& wf, arrayt<double>& B, double k_0, double k_c, int ctype);
 
-/*! Set an array to zero*/
-void zero_array(array <double>& in_array);
+/*! Set an arrayt to zero*/
+void zero_arrayt(arrayt <double>& in_arrayt);
 
-/*! method to add together two arrays M1 and M2*/
-array <double> add_arrays(array <double>& M1, array <double>& M2);
+/*! method to add together two arrayts M1 and M2*/
+arrayt <double> add_arrayts(arrayt <double>& M1, arrayt <double>& M2);
 
-/*! method to multiply together two 2-dimensional arrays M1(L*M) by M2(M*N)*/
-array <double> mult_arrays(array <double>& M1, array <double>& M2);
+/*! method to multiply together two 2-dimensional arrayts M1(L*M) by M2(M*N)*/
+arrayt <double> mult_arrayts(arrayt <double>& M1, arrayt <double>& M2);
 
 /*! method to get inverse of a square matrix*/
-array <double> inv_array(array <double>& input);
+arrayt <double> inv_arrayt(arrayt <double>& input);
 
-/*! method to get transpose of a square array*/
-array <double> transpose_array(array <double>& in_array);
+/*! method to get transpose of a square arrayt*/
+arrayt <double> transpose_arrayt(arrayt <double>& in_arrayt);
 
 /*! END */
 

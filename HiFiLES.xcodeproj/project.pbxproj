@@ -30,6 +30,11 @@
 		05CCBCBD1824729D0074A979 /* mpi_inters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05CCBCA51824729D0074A979 /* mpi_inters.cpp */; };
 		05E96FA318258403000BE589 /* output.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05E96FA118258403000BE589 /* output.cpp */; };
 		05E96FA418258403000BE589 /* solver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05E96FA218258403000BE589 /* solver.cpp */; };
+		470D0C9B1DFA5F33005C7D32 /* linear_solvers_structure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 470D0C961DFA5F33005C7D32 /* linear_solvers_structure.cpp */; };
+		470D0C9C1DFA5F33005C7D32 /* matrix_structure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 470D0C971DFA5F33005C7D32 /* matrix_structure.cpp */; };
+		470D0C9D1DFA5F33005C7D32 /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 470D0C981DFA5F33005C7D32 /* mesh.cpp */; };
+		470D0C9E1DFA5F33005C7D32 /* source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 470D0C991DFA5F33005C7D32 /* source.cpp */; };
+		470D0C9F1DFA5F33005C7D32 /* vector_structure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 470D0C9A1DFA5F33005C7D32 /* vector_structure.cpp */; };
 		81C26AD718F4760F001F5947 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 81C26AD518F4760F001F5947 /* Makefile */; };
 /* End PBXBuildFile section */
 
@@ -68,7 +73,7 @@
 		05CCBCA11824729C0074A979 /* inters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = inters.cpp; path = src/inters.cpp; sourceTree = "<group>"; };
 		05CCBCA41824729D0074A979 /* geometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = geometry.cpp; path = src/geometry.cpp; sourceTree = "<group>"; };
 		05CCBCA51824729D0074A979 /* mpi_inters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mpi_inters.cpp; path = src/mpi_inters.cpp; sourceTree = "<group>"; };
-		05CCBCBF182472A70074A979 /* array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = array.h; path = include/array.h; sourceTree = "<group>"; };
+		05CCBCBF182472A70074A979 /* arrayt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = arrayt.h; path = include/arrayt.h; sourceTree = "<group>"; };
 		05CCBCC0182472A70074A979 /* bdy_inters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bdy_inters.h; path = include/bdy_inters.h; sourceTree = "<group>"; };
 		05CCBCC1182472A70074A979 /* cubature_1d.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cubature_1d.h; path = include/cubature_1d.h; sourceTree = "<group>"; };
 		05CCBCC2182472A70074A979 /* cubature_hexa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cubature_hexa.h; path = include/cubature_hexa.h; sourceTree = "<group>"; };
@@ -112,6 +117,20 @@
 		05E96FA0182583E9000BE589 /* output.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = output.h; path = include/output.h; sourceTree = "<group>"; };
 		05E96FA118258403000BE589 /* output.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = output.cpp; path = src/output.cpp; sourceTree = "<group>"; };
 		05E96FA218258403000BE589 /* solver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = solver.cpp; path = src/solver.cpp; sourceTree = "<group>"; };
+		470D0C8D1DFA5F20005C7D32 /* linear_solvers_structure.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = linear_solvers_structure.hpp; path = include/linear_solvers_structure.hpp; sourceTree = "<group>"; };
+		470D0C8E1DFA5F20005C7D32 /* linear_solvers_structure.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = linear_solvers_structure.inl; path = include/linear_solvers_structure.inl; sourceTree = "<group>"; };
+		470D0C8F1DFA5F20005C7D32 /* matrix_structure.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_structure.hpp; path = include/matrix_structure.hpp; sourceTree = "<group>"; };
+		470D0C901DFA5F20005C7D32 /* matrix_structure.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = matrix_structure.inl; path = include/matrix_structure.inl; sourceTree = "<group>"; };
+		470D0C911DFA5F20005C7D32 /* mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mesh.h; path = include/mesh.h; sourceTree = "<group>"; };
+		470D0C921DFA5F20005C7D32 /* source.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = source.h; path = include/source.h; sourceTree = "<group>"; };
+		470D0C931DFA5F20005C7D32 /* vector_structure.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vector_structure.hpp; path = include/vector_structure.hpp; sourceTree = "<group>"; };
+		470D0C941DFA5F20005C7D32 /* vector_structure.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vector_structure.inl; path = include/vector_structure.inl; sourceTree = "<group>"; };
+		470D0C951DFA5F33005C7D32 /* cuda_kernels.cu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cuda_kernels.cu; path = src/cuda_kernels.cu; sourceTree = "<group>"; };
+		470D0C961DFA5F33005C7D32 /* linear_solvers_structure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = linear_solvers_structure.cpp; path = src/linear_solvers_structure.cpp; sourceTree = "<group>"; };
+		470D0C971DFA5F33005C7D32 /* matrix_structure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_structure.cpp; path = src/matrix_structure.cpp; sourceTree = "<group>"; };
+		470D0C981DFA5F33005C7D32 /* mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mesh.cpp; path = src/mesh.cpp; sourceTree = "<group>"; };
+		470D0C991DFA5F33005C7D32 /* source.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = source.cpp; path = src/source.cpp; sourceTree = "<group>"; };
+		470D0C9A1DFA5F33005C7D32 /* vector_structure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vector_structure.cpp; path = src/vector_structure.cpp; sourceTree = "<group>"; };
 		81C26AD518F4760F001F5947 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		81C26AD618F4760F001F5947 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		E994EDC5192416DE0058FE94 /* input_template */ = {isa = PBXFileReference; lastKnownFileType = text; path = input_template; sourceTree = "<group>"; };
@@ -252,11 +271,19 @@
 		05CCBC8D182472820074A979 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				470D0C8D1DFA5F20005C7D32 /* linear_solvers_structure.hpp */,
+				470D0C8E1DFA5F20005C7D32 /* linear_solvers_structure.inl */,
+				470D0C8F1DFA5F20005C7D32 /* matrix_structure.hpp */,
+				470D0C901DFA5F20005C7D32 /* matrix_structure.inl */,
+				470D0C911DFA5F20005C7D32 /* mesh.h */,
+				470D0C921DFA5F20005C7D32 /* source.h */,
+				470D0C931DFA5F20005C7D32 /* vector_structure.hpp */,
+				470D0C941DFA5F20005C7D32 /* vector_structure.inl */,
 				05CCBCDA182472A70074A979 /* solution.h */,
 				05CCBCD6182472A70074A979 /* geometry.h */,
 				05E96F9F182583C5000BE589 /* solver.h */,
 				05E96FA0182583E9000BE589 /* output.h */,
-				05CCBCBF182472A70074A979 /* array.h */,
+				05CCBCBF182472A70074A979 /* arrayt.h */,
 				05CCBCC6182472A70074A979 /* cuda_kernels.h */,
 				05CCBCCD182472A70074A979 /* error.h */,
 				05CCBCCE182472A70074A979 /* flux.h */,
@@ -275,6 +302,12 @@
 		05CCBC8E182472890074A979 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				470D0C951DFA5F33005C7D32 /* cuda_kernels.cu */,
+				470D0C961DFA5F33005C7D32 /* linear_solvers_structure.cpp */,
+				470D0C971DFA5F33005C7D32 /* matrix_structure.cpp */,
+				470D0C981DFA5F33005C7D32 /* mesh.cpp */,
+				470D0C991DFA5F33005C7D32 /* source.cpp */,
+				470D0C9A1DFA5F33005C7D32 /* vector_structure.cpp */,
 				05CCBC9E1824729C0074A979 /* HiFiLES.cpp */,
 				05CCBCA41824729D0074A979 /* geometry.cpp */,
 				05E96FA218258403000BE589 /* solver.cpp */,
@@ -344,7 +377,9 @@
 			files = (
 				05E96FA418258403000BE589 /* solver.cpp in Sources */,
 				05CCBCB61824729D0074A979 /* HiFiLES.cpp in Sources */,
+				470D0C9D1DFA5F33005C7D32 /* mesh.cpp in Sources */,
 				05CCBCAC1824729D0074A979 /* cubature_tri.cpp in Sources */,
+				470D0C9E1DFA5F33005C7D32 /* source.cpp in Sources */,
 				05CCBCB71824729D0074A979 /* input.cpp in Sources */,
 				05CCBCA91824729D0074A979 /* cubature_hexa.cpp in Sources */,
 				05CCBCB51824729D0074A979 /* global.cpp in Sources */,
@@ -352,6 +387,7 @@
 				05CCBCB21824729D0074A979 /* eles.cpp in Sources */,
 				05CCBCB11824729D0074A979 /* eles_tris.cpp in Sources */,
 				05CCBCA71824729D0074A979 /* bdy_inters.cpp in Sources */,
+				470D0C9C1DFA5F33005C7D32 /* matrix_structure.cpp in Sources */,
 				05E96FA318258403000BE589 /* output.cpp in Sources */,
 				05CCBCBC1824729D0074A979 /* geometry.cpp in Sources */,
 				05CCBCBD1824729D0074A979 /* mpi_inters.cpp in Sources */,
@@ -363,7 +399,9 @@
 				05CCBCAA1824729D0074A979 /* cubature_quad.cpp in Sources */,
 				05CCBCB01824729D0074A979 /* eles_tets.cpp in Sources */,
 				05CCBCB81824729D0074A979 /* int_inters.cpp in Sources */,
+				470D0C9B1DFA5F33005C7D32 /* linear_solvers_structure.cpp in Sources */,
 				05CCBCAF1824729D0074A979 /* eles_quads.cpp in Sources */,
+				470D0C9F1DFA5F33005C7D32 /* vector_structure.cpp in Sources */,
 				05CCBCAB1824729D0074A979 /* cubature_tet.cpp in Sources */,
 				05CCBCAD1824729D0074A979 /* eles_hexas.cpp in Sources */,
 			);

@@ -24,13 +24,13 @@
  */
 
 #include "../include/global.h"
-#include "../include/array.h"
+#include "../include/arrayt.h"
 #include <math.h>
 
 using namespace std;
 
 input run_input;
-const double pi=4*atan(1);
+const double pi_t=4*atan(1);
 
 const char* HIFILES_DIR = getenv("HIFILES_HOME");
 

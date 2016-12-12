@@ -46,7 +46,7 @@ extern "C"
 #include "../include/global.h"
 #include "../include/eles.h"
 #include "../include/eles_hexas.h"
-#include "../include/array.h"
+#include "../include/arrayt.h"
 #include "../include/funcs.h"
 #include "../include/error.h"
 #include "../include/cubature_1d.h"
@@ -142,7 +142,7 @@ void eles_hexas::setup_ele_type_specific()
 
 // set shape
 
-/*void eles_hexas::set_shape(array<int> &in_n_spts_per_ele)
+/*void eles_hexas::set_shape(arrayt<int> &in_n_spts_per_ele)
 {
   //TODO: this is inefficient, copies by value
   n_spts_per_ele = in_n_spts_per_ele;
@@ -199,7 +199,7 @@ void eles_hexas::set_loc_1d_upts(void)
     {
       int get_order=order;
 
-      array<double> loc_1d_gauss_pts(order+1);
+      arrayt<double> loc_1d_gauss_pts(order+1);
 
 #include "../data/loc_1d_gauss_pts.dat"
 
@@ -209,7 +209,7 @@ void eles_hexas::set_loc_1d_upts(void)
     {
       int get_order=order;
 
-      array<double> loc_1d_gauss_lobatto_pts(order+1);
+      arrayt<double> loc_1d_gauss_lobatto_pts(order+1);
 
 #include "../data/loc_1d_gauss_lobatto_pts.dat"
 
@@ -223,7 +223,7 @@ void eles_hexas::set_loc_1d_upts(void)
 
 // set location of 1d shape points in standard interval (required for tensor product element)
 
-void eles_hexas::set_loc_1d_spts(array<double> &loc_1d_spts, int in_n_1d_spts)
+void eles_hexas::set_loc_1d_spts(arrayt<double> &loc_1d_spts, int in_n_1d_spts)
 {
   int i;
 
@@ -439,7 +439,7 @@ void eles_hexas::set_volume_cubpts(void)
 }
 
 // Compute the surface jacobian determinant on a face
-double eles_hexas::compute_inter_detjac_inters_cubpts(int in_inter,array<double> d_pos)
+double eles_hexas::compute_inter_detjac_inters_cubpts(int in_inter,arrayt<double> d_pos)
 {
   double output = 0.;
   double xr, xs, xt;
@@ -633,8 +633,8 @@ void eles_hexas::compute_filter_upts(void)
   double dlt, k_c, sum, norm;
   N = order+1;
 
-  array<double> X(N), B(N);
-  array<double> beta(N,N);
+  arrayt<double> X(N), B(N);
+  arrayt<double> beta(N,N);
 
   filter_upts_1D.setup(N,N);
 
@@ -659,8 +659,8 @@ void eles_hexas::compute_filter_upts(void)
   if(run_input.filter_type==0 and N>=3)
     {
       if (rank==0) cout<<"Building high-order-commuting Vasilyev filter"<<endl;
-      array<double> C(N);
-      array<double> A(N,N);
+      arrayt<double> C(N);
+      arrayt<double> A(N,N);
 
       for (i=0;i<N;++i)
         {
@@ -676,8 +676,8 @@ void eles_hexas::compute_filter_upts(void)
           // Populate constraints matrix
           B(0) = 1.0;
           // Gauss filter weights
-          B(1) =  exp(-pow(pi,2)/24.0);
-          B(2) = -B(1)*pow(pi,2)/k_c/12.0;
+          B(1) =  exp(-pow(pi_t,2)/24.0);
+          B(2) = -B(1)*pow(pi_t,2)/k_c/12.0;
 
           if(N % 2 == 1 && i+1 == N2)
             B(2) = 0.0;
@@ -685,8 +685,8 @@ void eles_hexas::compute_filter_upts(void)
           for (j=0;j<N;++j)
             {
               A(j,0) = 1.0;
-              A(j,1) = cos(pi*k_c*beta(j,i));
-              A(j,2) = -beta(j,i)*pi*sin(pi*k_c*beta(j,i));
+              A(j,1) = cos(pi_t*k_c*beta(j,i));
+              A(j,2) = -beta(j,i)*pi_t*sin(pi_t*k_c*beta(j,i));
 
               if(N % 2 == 1 && i+1 == N2)
                 A(j,2) = pow(beta(j,i),3);
@@ -716,10 +716,10 @@ void eles_hexas::compute_filter_upts(void)
       int ctype, index;
       double k_R, k_L, coeff;
       double res_0, res_L, res_R;
-      array<double> alpha(N);
+      arrayt<double> alpha(N);
       cubature_1d cub_1d(inters_cub_order);
       int n_cubpts_1d = cub_1d.get_n_pts();
-      array<double> wf(n_cubpts_1d);
+      arrayt<double> wf(n_cubpts_1d);
 
       if(N != n_cubpts_1d)
         {
@@ -909,12 +909,12 @@ void eles_hexas::set_vandermonde(void)
       vandermonde(i,j) = eval_legendre(loc_1d_upts(i),j);
 
   // Store its inverse
-  inv_vandermonde = inv_array(vandermonde);
+  inv_vandermonde = inv_arrayt(vandermonde);
 }
 
 // evaluate nodal basis
 
-double eles_hexas::eval_nodal_basis(int in_index, array<double> in_loc)
+double eles_hexas::eval_nodal_basis(int in_index, arrayt<double> in_loc)
 {
   int i,j,k;
 
@@ -931,7 +931,7 @@ double eles_hexas::eval_nodal_basis(int in_index, array<double> in_loc)
 
 // evaluate nodal basis using restart points
 //
-double eles_hexas::eval_nodal_basis_restart(int in_index, array<double> in_loc)
+double eles_hexas::eval_nodal_basis_restart(int in_index, arrayt<double> in_loc)
 {
   int i,j,k;
 
@@ -948,7 +948,7 @@ double eles_hexas::eval_nodal_basis_restart(int in_index, array<double> in_loc)
 
 // evaluate derivative of nodal basis
 
-double eles_hexas::eval_d_nodal_basis(int in_index, int in_cpnt, array<double> in_loc)
+double eles_hexas::eval_d_nodal_basis(int in_index, int in_cpnt, arrayt<double> in_loc)
 {
   int i,j,k;
 
@@ -980,7 +980,7 @@ double eles_hexas::eval_d_nodal_basis(int in_index, int in_cpnt, array<double> i
 
 // evaluate nodal shape basis
 
-double eles_hexas::eval_nodal_s_basis(int in_index, array<double> in_loc, int in_n_spts)
+double eles_hexas::eval_nodal_s_basis(int in_index, arrayt<double> in_loc, int in_n_spts)
 {
   int i,j,k;
   double nodal_s_basis;
@@ -988,7 +988,7 @@ double eles_hexas::eval_nodal_s_basis(int in_index, array<double> in_loc, int in
   if (is_perfect_cube(in_n_spts))
     {
       int n_1d_spts = round(pow(in_n_spts,1./3.));
-      array<double> loc_1d_spts(n_1d_spts);
+      arrayt<double> loc_1d_spts(n_1d_spts);
       set_loc_1d_spts(loc_1d_spts,n_1d_spts);
 
       i=(in_index/(n_1d_spts*n_1d_spts));
@@ -1051,14 +1051,14 @@ double eles_hexas::eval_nodal_s_basis(int in_index, array<double> in_loc, int in
 
 // evaluate derivative of nodal shape basis
 
-void eles_hexas::eval_d_nodal_s_basis(array<double> &d_nodal_s_basis, array<double> in_loc, int in_n_spts)
+void eles_hexas::eval_d_nodal_s_basis(arrayt<double> &d_nodal_s_basis, arrayt<double> in_loc, int in_n_spts)
 {
   int i,j,k;
 
   if (is_perfect_cube(in_n_spts))
     {
       int n_1d_spts = round(pow(in_n_spts,1./3.));
-      array<double> loc_1d_spts(n_1d_spts);
+      arrayt<double> loc_1d_spts(n_1d_spts);
       set_loc_1d_spts(loc_1d_spts,n_1d_spts);
 
       for (int m=0;m<in_n_spts;++m)
@@ -1145,10 +1145,10 @@ void eles_hexas::eval_d_nodal_s_basis(array<double> &d_nodal_s_basis, array<doub
     }
 }
 
-void eles_hexas::fill_opp_3(array<double>& opp_3)
+void eles_hexas::fill_opp_3(arrayt<double>& opp_3)
 {
   int i,j,k;
-  array<double> loc(n_dims);
+  arrayt<double> loc(n_dims);
 
   for(i=0;i<n_fpts_per_ele;++i)
     {
@@ -1166,7 +1166,7 @@ void eles_hexas::fill_opp_3(array<double>& opp_3)
 
 // evaluate divergence of vcjh basis
 
-double eles_hexas::eval_div_vcjh_basis(int in_index, array<double>& loc)
+double eles_hexas::eval_div_vcjh_basis(int in_index, arrayt<double>& loc)
 {
   int i,j,k;
   double eta;

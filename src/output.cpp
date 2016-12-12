@@ -33,7 +33,7 @@
 #include <unistd.h>
 
 #include "../include/global.h"
-#include "../include/array.h"
+#include "../include/arrayt.h"
 #include "../include/input.h"
 #include "../include/geometry.h"
 #include "../include/solver.h"
@@ -72,16 +72,16 @@ void write_tec(int in_file_num, struct solution* FlowSol)
 
   int p_res=run_input.p_res; // HACK
 
-  array<double> pos_ppts_temp;
-  array<double> disu_ppts_temp;
-  array<double> grad_disu_ppts_temp;
-  array<double> disu_average_ppts_temp;
-  array<double> diag_ppts_temp;
+  arrayt<double> pos_ppts_temp;
+  arrayt<double> disu_ppts_temp;
+  arrayt<double> grad_disu_ppts_temp;
+  arrayt<double> disu_average_ppts_temp;
+  arrayt<double> diag_ppts_temp;
 
   /*! Sensor data for artificial viscosity at plot points */
-  array<double> sensor_ppts_temp;
+  arrayt<double> sensor_ppts_temp;
   /*! Artificial viscosity co-efficient values for artificial viscosity at plot points */
-  array<double> epsilon_ppts_temp;
+  arrayt<double> epsilon_ppts_temp;
 
   int n_ppts_per_ele;
   int n_dims = FlowSol->n_dims;
@@ -195,7 +195,7 @@ void write_tec(int in_file_num, struct solution* FlowSol)
           diag_ppts_temp.setup(n_ppts_per_ele,n_diag_fields);
           disu_average_ppts_temp.setup(n_ppts_per_ele,n_average_fields);
 
-          /*! Temporary field for sensor array at plot points */
+          /*! Temporary field for sensor arrayt at plot points */
           sensor_ppts_temp.setup(n_ppts_per_ele);
 
           /*! Temporary field for artificial viscosity co-efficients at plot points */
@@ -604,24 +604,24 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
   int ele_type;
 
   /*! Plot point coordinates */
-  array<double> pos_ppts_temp;
+  arrayt<double> pos_ppts_temp;
   /*! Solution data at plot points */
-  array<double> disu_ppts_temp;
+  arrayt<double> disu_ppts_temp;
   /*! Solution gradient data at plot points */
-  array<double> grad_disu_ppts_temp;
+  arrayt<double> grad_disu_ppts_temp;
   /*! Diagnostic field data at plot points */
-  array<double> diag_ppts_temp;
+  arrayt<double> diag_ppts_temp;
   /*! Time-averaged diagnostic field data at plot points */
-  array<double> disu_average_ppts_temp;
+  arrayt<double> disu_average_ppts_temp;
   /*! Grid velocity at plot points */
-  array<double> grid_vel_ppts_temp;
+  arrayt<double> grid_vel_ppts_temp;
   /*! Sensor data for artificial viscosity at plot points */
-  array<double> sensor_ppts_temp;
+  arrayt<double> sensor_ppts_temp;
   /*! Artificial viscosity co-efficient values for artificial viscosity at plot points */
-  array<double> epsilon_ppts_temp;
+  arrayt<double> epsilon_ppts_temp;
 
-  /*! Plot sub-element connectivity array (node IDs) */
-  array<int> con;
+  /*! Plot sub-element connectivity arrayt (node IDs) */
+  arrayt<int> con;
 
   /*! VTK element types (different to HiFiLES element type) */
   /*! tri, quad, tet, prism (undefined), hex */
@@ -697,32 +697,32 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
 
       /*! Write point data */
       write_pvtu << "		<PPointData Scalars=\"Density\" Vectors=\"Velocity\">" << endl;
-      write_pvtu << "			<PDataArray type=\"Float32\" Name=\"Density\" />" << endl;
-      write_pvtu << "			<PDataArray type=\"Float32\" Name=\"Velocity\" NumberOfComponents=\"3\" />" << endl;
-      write_pvtu << "			<PDataArray type=\"Float32\" Name=\"Energy\" />" << endl;
+      write_pvtu << "			<PDataarrayt type=\"Float32\" Name=\"Density\" />" << endl;
+      write_pvtu << "			<PDataarrayt type=\"Float32\" Name=\"Velocity\" NumberOfComponents=\"3\" />" << endl;
+      write_pvtu << "			<PDataarrayt type=\"Float32\" Name=\"Energy\" />" << endl;
 
       /*! write out modified turbulent viscosity */
       if (run_input.turb_model==1) {
-        write_pvtu << "			<PDataArray type=\"Float32\" Name=\"Mu_Tilde\" />" << endl;
+        write_pvtu << "			<PDataarrayt type=\"Float32\" Name=\"Mu_Tilde\" />" << endl;
       }
 
       // Optional time-averaged diagnostic fields
       for(m=0;m<n_average_fields;m++)
         {
-          write_pvtu << "			<PDataArray type=\"Float32\" Name=\"" << run_input.average_fields(m) << "\" />" << endl;
+          write_pvtu << "			<PDataarrayt type=\"Float32\" Name=\"" << run_input.average_fields(m) << "\" />" << endl;
         }
 
       // Optional diagnostic fields
       for(m=0;m<n_diag_fields;m++)
         {
-          write_pvtu << "			<PDataArray type=\"Float32\" Name=\"" << run_input.diagnostic_fields(m) << "\" />" << endl;
+          write_pvtu << "			<PDataarrayt type=\"Float32\" Name=\"" << run_input.diagnostic_fields(m) << "\" />" << endl;
         }
 
       write_pvtu << "		</PPointData>" << endl;
 
       /*! Write points */
       write_pvtu << "		<PPoints>" << endl;
-      write_pvtu << "			<PDataArray type=\"Float32\" Name=\"Points\" NumberOfComponents=\"3\" />" << endl;
+      write_pvtu << "			<PDataarrayt type=\"Float32\" Name=\"Points\" NumberOfComponents=\"3\" />" << endl;
       write_pvtu << "		</PPoints>" << endl;
 
       /*! Write names of source .vtu files to include */
@@ -782,32 +782,32 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
           /*! no. of dimensions */
           n_dims = FlowSol->mesh_eles(i)->get_n_dims();
 
-          /*! Temporary array of plot point coordinates */
+          /*! Temporary arrayt of plot point coordinates */
           pos_ppts_temp.setup(n_points,n_dims);
 
-          /*! Temporary solution array at plot points */
+          /*! Temporary solution arrayt at plot points */
           disu_ppts_temp.setup(n_points,n_fields);
 
-          /*! Temporary array of time averaged fields at the plot points */
+          /*! Temporary arrayt of time averaged fields at the plot points */
           if(n_average_fields > 0) {
             disu_average_ppts_temp.setup(n_points,n_average_fields);
           }
 
           if(n_diag_fields > 0) {
-            /*! Temporary solution array at plot points */
+            /*! Temporary solution arrayt at plot points */
             grad_disu_ppts_temp.setup(n_points,n_fields,n_dims);
 
-            /*! Temporary diagnostic field array at plot points */
+            /*! Temporary diagnostic field arrayt at plot points */
             diag_ppts_temp.setup(n_points,n_diag_fields);
 
-            /*! Temporary field for sensor array at plot points */
+            /*! Temporary field for sensor arrayt at plot points */
             sensor_ppts_temp.setup(n_points);
 
             /*! Temporary field for artificial viscosity co-efficients at plot points */
             epsilon_ppts_temp.setup(n_points);
           }
 
-          /*! Temporary grid velocity array at plot points */
+          /*! Temporary grid velocity arrayt at plot points */
           if (run_input.motion) {
             FlowSol->mesh_eles(i)->set_grid_vel_ppts();
             grid_vel_ppts_temp = FlowSol->mesh_eles(i)->get_grid_vel_ppts();
@@ -816,7 +816,7 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
           con.setup(n_verts,n_cells);
           con = FlowSol->mesh_eles(i)->get_connectivity_plot();
 
-          /*! Loop over individual elements and write their data as a separate VTK DataArray */
+          /*! Loop over individual elements and write their data as a separate VTK Dataarrayt */
           for(j=0;j<n_eles;j++)
             {
               write_vtu << "		<Piece NumberOfPoints=\"" << n_points << "\" NumberOfCells=\"" << n_cells << "\">" << endl;
@@ -852,16 +852,16 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
               write_vtu << "			<PointData>" << endl;
 
               /*! density */
-              write_vtu << "				<DataArray type= \"Float32\" Name=\"Density\" format=\"ascii\">" << endl;
+              write_vtu << "				<Dataarrayt type= \"Float32\" Name=\"Density\" format=\"ascii\">" << endl;
               for(k=0;k<n_points;k++)
                 {
                   write_vtu << disu_ppts_temp(k,0) << " ";
                 }
               write_vtu << endl;
-              write_vtu << "				</DataArray>" << endl;
+              write_vtu << "				</Dataarrayt>" << endl;
 
               /*! velocity */
-              write_vtu << "				<DataArray type= \"Float32\" NumberOfComponents=\"3\" Name=\"Velocity\" format=\"ascii\">" << endl;
+              write_vtu << "				<Dataarrayt type= \"Float32\" NumberOfComponents=\"3\" Name=\"Velocity\" format=\"ascii\">" << endl;
               for(k=0;k<n_points;k++)
                 {
                   /*! Divide momentum components by density to obtain velocity components */
@@ -879,10 +879,10 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
                     }
                 }
               write_vtu << endl;
-              write_vtu << "				</DataArray>" << endl;
+              write_vtu << "				</Dataarrayt>" << endl;
 
               /*! energy */
-              write_vtu << "				<DataArray type= \"Float32\" Name=\"Energy\" format=\"ascii\">" << endl;
+              write_vtu << "				<Dataarrayt type= \"Float32\" Name=\"Energy\" format=\"ascii\">" << endl;
               for(k=0;k<n_points;k++)
                 {
                   /*! In 2D energy is the 4th solution component */
@@ -897,11 +897,11 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
                     }
                 }
               write_vtu << endl;
-              write_vtu << "				</DataArray>" << endl;
+              write_vtu << "				</Dataarrayt>" << endl;
 
               /*! modified turbulent viscosity */
               if (run_input.turb_model == 1) {
-                write_vtu << "				<DataArray type= \"Float32\" Name=\"Nu_Tilde\" format=\"ascii\">" << endl;
+                write_vtu << "				<Dataarrayt type= \"Float32\" Name=\"Nu_Tilde\" format=\"ascii\">" << endl;
                 for(k=0;k<n_points;k++)
                 {
                   /*! In 2D nu_tilde is the 5th solution component */
@@ -915,14 +915,14 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
                     write_vtu << disu_ppts_temp(k,5)/disu_ppts_temp(k,0) << " ";
                   }
                 }
-                /*! End the line and finish writing DataArray and PointData objects */
+                /*! End the line and finish writing Dataarrayt and PointData objects */
                 write_vtu << endl;
-                write_vtu << "				</DataArray>" << endl;
+                write_vtu << "				</Dataarrayt>" << endl;
               }
 
               if (run_input.motion) {
                 /*! grid velocity */
-                write_vtu << "				<DataArray type= \"Float32\" NumberOfComponents=\"3\" Name=\"GridVelocity\" format=\"ascii\">" << endl;
+                write_vtu << "				<Dataarrayt type= \"Float32\" NumberOfComponents=\"3\" Name=\"GridVelocity\" format=\"ascii\">" << endl;
                 for(k=0;k<n_points;k++)
                 {
                   write_vtu << grid_vel_ppts_temp(0,k,j) << " " << grid_vel_ppts_temp(1,k,j) << " ";
@@ -939,35 +939,35 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
                   }
                 }
                 write_vtu << endl;
-                write_vtu << "				</DataArray>" << endl;
+                write_vtu << "				</Dataarrayt>" << endl;
               }
 
               /*! Write out optional time-averaged diagnostic fields */
               for(m=0;m<n_average_fields;m++)
                 {
-                  write_vtu << "				<DataArray type= \"Float32\" Name=\"" << run_input.average_fields(m) << "\" format=\"ascii\">" << endl;
+                  write_vtu << "				<Dataarrayt type= \"Float32\" Name=\"" << run_input.average_fields(m) << "\" format=\"ascii\">" << endl;
                   for(k=0;k<n_points;k++)
                     {
                       write_vtu << disu_average_ppts_temp(k,m) << " ";
                     }
 
-                  /*! End the line and finish writing DataArray object */
+                  /*! End the line and finish writing Dataarrayt object */
                   write_vtu << endl;
-                  write_vtu << "				</DataArray>" << endl;
+                  write_vtu << "				</Dataarrayt>" << endl;
                 }
 
               /*! Write out optional diagnostic fields */
               for(m=0;m<n_diag_fields;m++)
                 {
-                  write_vtu << "				<DataArray type= \"Float32\" Name=\"" << run_input.diagnostic_fields(m) << "\" format=\"ascii\">" << endl;
+                  write_vtu << "				<Dataarrayt type= \"Float32\" Name=\"" << run_input.diagnostic_fields(m) << "\" format=\"ascii\">" << endl;
                   for(k=0;k<n_points;k++)
                     {
                       write_vtu << diag_ppts_temp(k,m) << " ";
                     }
 
-                  /*! End the line and finish writing DataArray object */
+                  /*! End the line and finish writing Dataarrayt object */
                   write_vtu << endl;
-                  write_vtu << "				</DataArray>" << endl;
+                  write_vtu << "				</Dataarrayt>" << endl;
                 }
 
               /*! finish writing PointData object */
@@ -978,7 +978,7 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
 
               /*! write out the plot coordinates */
               write_vtu << "			<Points>" << endl;
-              write_vtu << "				<DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << endl;
+              write_vtu << "				<Dataarrayt type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">" << endl;
 
               /*! Loop over plot points in element */
               for(k=0;k<n_points;k++)
@@ -996,14 +996,14 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
                 }
 
               write_vtu << endl;
-              write_vtu << "				</DataArray>" << endl;
+              write_vtu << "				</Dataarrayt>" << endl;
               write_vtu << "			</Points>" << endl;
 
               /*! write out Cell data: connectivity, offsets, element types */
               write_vtu << "			<Cells>" << endl;
 
-              /*! Write connectivity array */
-              write_vtu << "				<DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">" << endl;
+              /*! Write connectivity arrayt */
+              write_vtu << "				<Dataarrayt type=\"Int32\" Name=\"connectivity\" format=\"ascii\">" << endl;
 
               for(k=0;k<n_cells;k++)
                 {
@@ -1013,25 +1013,25 @@ void write_vtu(int in_file_num, struct solution* FlowSol)
                     }
                   write_vtu << endl;
                 }
-              write_vtu << "				</DataArray>" << endl;
+              write_vtu << "				</Dataarrayt>" << endl;
 
               /*! Write cell numbers */
-              write_vtu << "				<DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">" << endl;
+              write_vtu << "				<Dataarrayt type=\"Int32\" Name=\"offsets\" format=\"ascii\">" << endl;
               for(k=0;k<n_cells;k++)
                 {
                   write_vtu << (k+1)*n_verts << " ";
                 }
               write_vtu << endl;
-              write_vtu << "				</DataArray>" << endl;
+              write_vtu << "				</Dataarrayt>" << endl;
 
               /*! Write VTK element type */
-              write_vtu << "				<DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">" << endl;
+              write_vtu << "				<Dataarrayt type=\"UInt8\" Name=\"types\" format=\"ascii\">" << endl;
               for(k=0;k<n_cells;k++)
                 {
                   write_vtu << vtktypes[i] << " ";
                 }
               write_vtu << endl;
-              write_vtu << "				</DataArray>" << endl;
+              write_vtu << "				</Dataarrayt>" << endl;
 
               /*! Write cell and piece footers */
               write_vtu << "			</Cells>" << endl;
@@ -1113,8 +1113,8 @@ void CalcForces(int in_file_num, struct solution* FlowSol) {
   struct stat st = {0};
   ofstream coeff_file;
   bool write_dir, write_forces;
-  array<double> temp_inv_force(FlowSol->n_dims);
-  array<double> temp_vis_force(FlowSol->n_dims);
+  arrayt<double> temp_inv_force(FlowSol->n_dims);
+  arrayt<double> temp_vis_force(FlowSol->n_dims);
   double temp_cl, temp_cd;
   int my_rank;
 
@@ -1208,8 +1208,8 @@ void CalcForces(int in_file_num, struct solution* FlowSol) {
 
 #ifdef _MPI
 
-  array<double> inv_force_global(FlowSol->n_dims);
-  array<double> vis_force_global(FlowSol->n_dims);
+  arrayt<double> inv_force_global(FlowSol->n_dims);
+  arrayt<double> vis_force_global(FlowSol->n_dims);
   double coeff_lift_global=0.0;
   double coeff_drag_global=0.0;
 
@@ -1258,7 +1258,7 @@ void CalcIntegralQuantities(int in_file_num, struct solution* FlowSol) {
 
 #ifdef _MPI
 
-  array<double> integral_quantities_global(nintq);
+  arrayt<double> integral_quantities_global(nintq);
   for(int j=0;j<nintq;++j)
     {
       integral_quantities_global(j) = 0.0;
@@ -1293,8 +1293,8 @@ void compute_error(int in_file_num, struct solution* FlowSol)
         }
     }
 
-  array<double> error(2,n_fields);
-  array<double> temp_error(2,n_fields);
+  arrayt<double> error(2,n_fields);
+  arrayt<double> temp_error(2,n_fields);
 
   for (int i=0; i<n_fields; i++)
     {
@@ -1319,7 +1319,7 @@ void compute_error(int in_file_num, struct solution* FlowSol)
 #ifdef _MPI
   int n_err_vals = 2*n_fields;
 
-  array<double> error_global(2,n_fields);
+  arrayt<double> error_global(2,n_fields);
   for (int i=0; i<n_fields; i++)
     {
       error_global(0,i) = 0.;
@@ -1626,7 +1626,7 @@ void check_stability(struct solution* FlowSol)
   double a_temp, b_temp;
   double c_file, a_file, b_file;
 
-  array<double> disu_ppts_temp;
+  arrayt<double> disu_ppts_temp;
 
   int r_flag = 0;
   double i_tol    = 1.0e-4;

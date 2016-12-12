@@ -29,7 +29,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include "array.h"
+#include "arrayt.h"
 
 class input
 {	
@@ -71,11 +71,11 @@ public:
   int equation;
 
   int n_diagnostic_fields;
-  array<string> diagnostic_fields;
+  arrayt<string> diagnostic_fields;
   int n_average_fields;
-  array<string> average_fields;
+  arrayt<string> average_fields;
   int n_integral_quantities;
-  array<string> integral_quantities;
+  arrayt<string> integral_quantities;
 
   double prandtl;
 
@@ -90,7 +90,7 @@ public:
   int volume_cub_order;
 
   int test_case;
-  array<double> wave_speed;
+  arrayt<double> wave_speed;
   double lambda;
 
   double dt;
@@ -130,9 +130,9 @@ public:
   int n_deform_iters;
   int mesh_output_freq;
   int mesh_output_format;
-  array<string> boundary_flags;
-  array<array<double> > bound_vel_simple;
-  array<int> motion_type;
+  arrayt<string> boundary_flags;
+  arrayt<arrayt<double> > bound_vel_simple;
+  arrayt<int> motion_type;
   /* -------------------------------- */
 
   /* --- Shock Capturing options --- */
@@ -144,7 +144,7 @@ public:
 
   // boundary_conditions
   double rho_bound;
-  array<double> v_bound;
+  arrayt<double> v_bound;
   double p_bound;
   double p_total_bound;
   double T_total_bound;
@@ -231,7 +231,7 @@ public:
   double ny_wall;
   double nz_wall;
 
-  array<double> v_wall;
+  arrayt<double> v_wall;
   double uvw_wall;
   double T_wall;
   
@@ -268,9 +268,9 @@ public:
   int bis_ind, file_lines;
   int device_num;
   int forcing;
-  array<double> x_coeffs;
-  array<double> y_coeffs;
-  array<double> z_coeffs;
+  arrayt<double> x_coeffs;
+  arrayt<double> y_coeffs;
+  arrayt<double> z_coeffs;
   int perturb_ic;
 
   double time, rk_time;
@@ -320,14 +320,14 @@ public:
   void getVectorValue(string optName, vector<T> &opt);
 
   template <typename T>
-  void getVectorValue(string optName, array<T> &opt);
+  void getVectorValue(string optName, arrayt<T> &opt);
 
   /*! Read a vector of values from the input file; if not found, setup vector to size 0 and continue */
   template <typename T>
   void getVectorValueOptional(string optName, vector<T> &opt);
 
   template <typename T>
-  void getVectorValueOptional(string optName, array<T> &opt);
+  void getVectorValueOptional(string optName, arrayt<T> &opt);
 
   /*! Read in a map of type <T,U> from input file; each entry prefaced by optName */
   template <typename T, typename U>
